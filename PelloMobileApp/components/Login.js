@@ -18,7 +18,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 const { TextField } = Incubator;
 
 export default function Landing() {
-  const [fullname, onChangeFullName] = React.useState(null);
   const [email, onChangeEmail] = React.useState(null);
   const [password, onChangePassword] = React.useState(null);
 
@@ -29,13 +28,6 @@ export default function Landing() {
     >
       <Text style={styles.text}>Pello</Text>
       <View>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeFullName}
-          value={fullname}
-          placeholder="Enter Full Name"
-          keyboardType="default"
-        />
         <TextInput
           style={styles.input}
           onChangeText={onChangeEmail}
@@ -52,9 +44,6 @@ export default function Landing() {
         />
         <TouchableOpacity style={styles.button}>
           <Text style={styles.btntext}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.btntext}>Sign Up</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAwareScrollView>
