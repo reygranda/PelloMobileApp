@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Landing from "./components/Landing";
 import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
 import {
   useFonts,
   Poppins_100Thin,
@@ -57,8 +58,8 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
-            name="Login"
-            component={Login}
+            name="Dashboard"
+            component={Dashboard}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
