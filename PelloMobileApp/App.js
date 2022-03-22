@@ -28,6 +28,7 @@ import {
   Poppins_900Black_Italic,
 } from "@expo-google-fonts/poppins";
 import AppLoading from "expo-app-loading";
+import TabNav from "./components/TabNav";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -54,17 +55,7 @@ export default function App() {
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Dashboard"
-            component={Dashboard}
-            options={{ headerShown: false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
+    return <TabNav />;
   }
 }
 const Stack = createNativeStackNavigator();

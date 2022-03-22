@@ -17,6 +17,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Poppins_300Light, Poppins_700Bold } from "@expo-google-fonts/poppins";
+import ProjectCard from "./ProjectCard";
 
 export default function Landing() {
   //   const [fullname, onChangeFullName] = React.useState(null);
@@ -39,21 +40,7 @@ export default function Landing() {
       </View>
       <View style={styles.projects}>
         <Text style={styles.projtitle}>Projects</Text>
-        <Card style={styles.card}>
-          <Text style={styles.cardTitle}>Web App</Text>
-          <Text style={styles.cardSubTitle}>January 5th, 2022</Text>
-          <Avatar size={24}></Avatar>
-        </Card>
-        <Card style={styles.card}>
-          <Text style={styles.cardTitle}>Web App</Text>
-          <Text style={styles.cardSubTitle}>January 5th, 2022</Text>
-          <Avatar size={24}></Avatar>
-        </Card>
-        <Card style={styles.card}>
-          <Text style={styles.cardTitle}>Web App</Text>
-          <Text style={styles.cardSubTitle}>January 5th, 2022</Text>
-          <Avatar size={24}></Avatar>
-        </Card>
+        <ProjectCard projectTitle="Web App" date="January" />
       </View>
     </View>
   );
@@ -74,24 +61,6 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_700Bold",
     fontSize: 18,
     paddingBottom: 30,
-  },
-  card: {
-    padding: 20,
-    backgroundColor: "#000",
-    shadowColor: "#000",
-    marginBottom: 20,
-  },
-  cardTitle: {
-    fontFamily: "Poppins_700Bold",
-    fontSize: 24,
-    color: "#fff",
-    paddingBottom: 5,
-  },
-  cardSubTitle: {
-    fontFamily: "Poppins_300Light",
-    fontSize: 12,
-    color: "#989595",
-    paddingBottom: 40,
   },
   user: {
     backgroundColor: "#fff",
