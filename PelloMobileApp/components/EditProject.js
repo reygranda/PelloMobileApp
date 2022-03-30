@@ -32,10 +32,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 export default function CreateProject() {
   return (
-    <KeyboardAwareScrollView>
+    <View>
       <View style={styles.header}>
         <Icon style={styles.icon}></Icon>
-        <Text style={styles.headertitle}>Create New Project</Text>
+        <Text style={styles.headertitle}>Edit Project</Text>
         <TouchableOpacity style={styles.editBtn}>
           <Text style={styles.editBtn}>Edit</Text>
         </TouchableOpacity>
@@ -64,11 +64,11 @@ export default function CreateProject() {
             color="#fff"
             style={styles.Btn}
           >
-            <Text style={styles.btnText}>Create</Text>
+            <Text style={styles.btnText}>Update</Text>
           </Button>
         </View>
       </View>
-    </KeyboardAwareScrollView>
+    </View>
   );
 }
 
