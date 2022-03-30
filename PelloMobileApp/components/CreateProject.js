@@ -1,5 +1,11 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import {
@@ -13,35 +19,23 @@ import {
   Incubator,
   Avatar,
   Card,
+  Icon,
 } from "react-native-ui-lib"; //eslint-disable-line
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Poppins_300Light, Poppins_700Bold } from "@expo-google-fonts/poppins";
 import ProjectCard from "./ProjectCard";
+import { styleProps } from "react-native-web/dist/cjs/modules/forwardedProps";
+import Backarrow from "../assets/backarrow.png";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-export default function Dashboard({ navigation }) {
-  //   const [fullname, onChangeFullName] = React.useState(null);
-  //   const [email, onChangeEmail] = React.useState(null);
-  //   const [password, onChangePassword] = React.useState(null);
-
+export default function CreateProject() {
   return (
     <View style={styles.container}>
-      <View style={styles.user}>
-        <View>
-          <Text style={styles.username}>Rey Granda</Text>
-          <Text style={styles.welcome}>Hello,</Text>
-        </View>
-        <Avatar
-          style={styles.avatar}
-          source={{
-            uri: "https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg",
-          }}
-        />
-      </View>
-      <View style={styles.projects}>
-        <Text style={styles.projtitle}>Projects</Text>
-        <Text>Add Project</Text>
-        <ProjectCard projectTitle="Web App" date="January" />
+      <View style={styles.header}>
+        <Icon></Icon>
+        <Text style={styles.headertitle}>Create New Project</Text>
       </View>
     </View>
   );
@@ -54,16 +48,12 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
-  projects: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-  projtitle: {
+  headertitle: {
     fontFamily: "Poppins_700Bold",
     fontSize: 18,
     paddingBottom: 30,
   },
-  user: {
+  header: {
     backgroundColor: "#fff",
     paddingHorizontal: 20,
     paddingTop: 50,
@@ -72,7 +62,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
     backgroundColor: "#fff",
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
   },
