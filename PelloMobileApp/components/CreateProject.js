@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -6,7 +7,6 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import {
   Assets,
@@ -29,8 +29,34 @@ import ProjectCard from "./ProjectCard";
 import { styleProps } from "react-native-web/dist/cjs/modules/forwardedProps";
 import Backarrow from "../assets/backarrow.png";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Dashboard from "./Dashboard";
+const axios = require("axios");
 
-export default function CreateProject() {
+export default function CreateProject(migrate, { navigation }) {
+  const [projName, setProjName] = useState("");
+  const [projDescription, setProjDescription] = useState("");
+
+  const createProj = () => {
+    // Creating axios call to backend
+    axios
+      // POST Request
+      .post("http://206.189.195.50:3000/api/project/add", {
+        projectTitle: projName,
+        description: projDescription,
+      })
+      // .then to navigate back to Dashboard once account is created
+      .then(function (response) {
+        if (response == 200) {
+          console.log(response);
+          navigation.navigate("Dashboard");
+        }
+      })
+      // Catch an error if one exists
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
   return (
     <KeyboardAwareScrollView>
       <View style={styles.header}>
@@ -48,6 +74,7 @@ export default function CreateProject() {
           floatingPlaceholderColor="#1C1018"
           fieldStyle={styles.underline}
           underlineColor="#989595"
+          onChangeText={(text) => setProjName(text)}
         ></TextField>
         <TextField
           placeholder={"Description"}
@@ -55,6 +82,7 @@ export default function CreateProject() {
           floatingPlaceholderColor="#1C1018"
           fieldStyle={styles.underline}
           underlineColor="#989595"
+          onChangeText={(text) => setProjDescription(text)}
         ></TextField>
         <View style={styles.btn}>
           <Button
@@ -63,6 +91,7 @@ export default function CreateProject() {
             size="large"
             color="#fff"
             style={styles.Btn}
+            onPress={() => createProj()}
           >
             <Text style={styles.btnText}>Create</Text>
           </Button>
