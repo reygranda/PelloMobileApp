@@ -44,7 +44,7 @@ export default function CreateProject(migrate, { navigation }) {
         projectTitle: projName,
         description: projDescription,
       })
-      // .then to navigate back to Dashboard once account is created
+      // .then to navigate back to Dashboard once project is created
       .then(function (response) {
         if (response == 200) {
           console.log(response);
