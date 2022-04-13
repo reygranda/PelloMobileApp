@@ -32,7 +32,7 @@ import { styleProps } from "react-native-web/dist/cjs/modules/forwardedProps";
 import Backarrow from "../assets/backarrow.png";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-export default function CreateProject() {
+export default function CreateProject(props) {
   return (
     <KeyboardAwareScrollView>
       <View style={styles.header}>
