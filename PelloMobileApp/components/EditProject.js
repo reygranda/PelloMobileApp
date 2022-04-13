@@ -30,7 +30,31 @@ import { styleProps } from "react-native-web/dist/cjs/modules/forwardedProps";
 import Backarrow from "../assets/backarrow.png";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-export default function CreateProject() {
+export default function CreateProject(props) {
+
+const [updateProjTitle, setUpdateProjTitle ] = useState("")
+const [updateProjDesc, setUpdateProjDesc ] = useState("")
+
+
+
+const updateProject = () => {
+  axios
+  
+  .put("http://206.189.195.50:3000/api/project/adduser", {
+    projectid: ,
+    projectTitle: setUpdateProjTitle,
+    projectDescription: setUpdateProjDesc,
+
+  })
+  .then(res => {
+    console.log(res)
+  })
+  .catch(err => {
+    console.error(err); 
+  })
+    
+}
+
   return (
     <View>
       <View style={styles.header}>
@@ -48,6 +72,7 @@ export default function CreateProject() {
           floatingPlaceholderColor="#1C1018"
           fieldStyle={styles.underline}
           underlineColor="#989595"
+          onChangeText={(text) => updateProjTitle(text)}
         ></TextField>
         <TextField
           placeholder={"Description"}
@@ -55,6 +80,7 @@ export default function CreateProject() {
           floatingPlaceholderColor="#1C1018"
           fieldStyle={styles.underline}
           underlineColor="#989595"
+          onChangeText={(text) => updateProjDesc(text)}
         ></TextField>
         <View style={styles.btn}>
           <Button
