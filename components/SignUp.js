@@ -15,7 +15,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { CognitoUserPool } from './UserPool';
+import { Amplify, Auth } from 'aws-amplify';
+import awsconfig from './aws-exports';
 
+Amplify.configure(awsconfig);
 const { TextField } = Incubator;
 
 export default function SignUp() {
@@ -24,12 +27,24 @@ export default function SignUp() {
   const [password, onChangePassword] = React.useState(null);
 
   const submitForm = () => {
-    CognitoUserPool.signUp(email, password, [], null, (err, data) => {
-      if (err) {
-        console.error(err);
-      }
-      console.log(data);
-    });
+    Auth.signUp({
+      username: email,
+      password,
+      attributes: {
+        email, // optional
+        fullname,
+      },
+      validationData: [], // optional
+    })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        if (err.message) {
+          setInvalidMessage(err.message);
+        }
+        console.log(err);
+      });
   };
 
   return (
