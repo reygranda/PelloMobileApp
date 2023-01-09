@@ -7,7 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import {
   Assets,
   Colors,
@@ -19,7 +19,6 @@ import {
   Incubator,
   Avatar,
   Card,
-  Icon,
   TextField,
 } from 'react-native-ui-lib'; //eslint-disable-line
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -34,8 +33,10 @@ import { useDidUpdate } from 'react-native-ui-lib/src/hooks';
 const axios = require('axios');
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+import backArrow from '../assets/arrow-back-svgrepo-com.svg';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-export default function CreateProject(migrate, { navigation }) {
+export default function CreateProject(migrate) {
   const [projName, setProjName] = useState('');
   const [projDescription, setProjDescription] = useState('');
 
@@ -65,15 +66,20 @@ export default function CreateProject(migrate, { navigation }) {
         console.log(error);
       });
   };
-
+  const navigation = useNavigation();
   return (
     <KeyboardAwareScrollView>
       <View style={styles.header}>
-        <Icon style={styles.icon}></Icon>
+        <Icon.Button
+          name="arrow-back-outline"
+          size={28}
+          backgroundColor="#fff"
+          color="#000"
+          style={styles.icon}
+          onPress={() => navigation.goBack()}
+        ></Icon.Button>
         <Text style={styles.headertitle}>Create New Project</Text>
-        <TouchableOpacity style={styles.editBtn}>
-          <Text style={styles.editBtn}>Edit</Text>
-        </TouchableOpacity>
+        <TouchableOpacity style={styles.editBtn}></TouchableOpacity>
       </View>
       <View style={styles.formContainer}>
         <Text style={styles.projTitle}>Project Details</Text>
@@ -135,6 +141,7 @@ const styles = StyleSheet.create({
   icon: {
     flex: 1,
     flexDirection: 'column',
+    marginLeft: 10,
   },
   editBtn: {
     flex: 1,
