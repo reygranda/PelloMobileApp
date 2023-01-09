@@ -1,11 +1,11 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View } from "react-native";
-import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Landing from "./components/Landing";
-import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View } from 'react-native';
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import SignUp from './components/SignUp';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
 import {
   useFonts,
   Poppins_100Thin,
@@ -26,9 +26,9 @@ import {
   Poppins_800ExtraBold_Italic,
   Poppins_900Black,
   Poppins_900Black_Italic,
-} from "@expo-google-fonts/poppins";
-import AppLoading from "expo-app-loading";
-import TabNav from "./components/TabNav";
+} from '@expo-google-fonts/poppins';
+import AppLoading from 'expo-app-loading';
+import TabNav from './components/TabNav';
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -63,12 +63,12 @@ const Stack = createNativeStackNavigator();
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   text: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });

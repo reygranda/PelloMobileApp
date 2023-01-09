@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+
 import {
   Assets,
   Colors,
@@ -18,6 +19,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Poppins_300Light, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import ProjectCard from './ProjectCard';
+import CreateProject from './CreateProject';
 import { useEffect } from 'react';
 const axios = require('axios');
 
@@ -66,8 +68,12 @@ export default function Dashboard({ props, navigation }) {
       </View>
       <View style={styles.projects}>
         <Text style={styles.projtitle}>Projects</Text>
-        <Text>Add Project</Text>
-        <ProjectCard projectTitle="Web App" date="January" />
+        <TouchableOpacity onPress={() => navigation.navigate('CreateProject')}>
+          <Text>Add Project</Text>
+        </TouchableOpacity>
+        <View style={styles.projCard}>
+          <ProjectCard projectTitle="Web App" date="January" />
+        </View>
       </View>
     </View>
   );
@@ -82,6 +88,7 @@ const styles = StyleSheet.create({
   },
   projects: {
     paddingHorizontal: 20,
+    paddingTop: 20,
     paddingTop: 20,
   },
   projtitle: {
@@ -100,7 +107,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
   },
   username: {
     fontFamily: 'Poppins_700Bold',
@@ -110,5 +116,8 @@ const styles = StyleSheet.create({
     color: '#989595',
     fontFamily: 'Poppins_400Regular',
     fontSize: 14,
+  },
+  projCard: {
+    marginVertical: 20,
   },
 });

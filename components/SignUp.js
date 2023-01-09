@@ -1,7 +1,7 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
-import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import {
   Assets,
   Colors,
@@ -11,16 +11,41 @@ import {
   Button,
   Keyboard,
   Incubator,
-} from "react-native-ui-lib"; //eslint-disable-line
-import { SafeAreaView } from "react-native-safe-area-context";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+} from 'react-native-ui-lib'; //eslint-disable-line
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { CognitoUserPool } from './UserPool';
+import { Amplify, Auth } from 'aws-amplify';
+import awsconfig from './aws-exports';
 
+Amplify.configure(awsconfig);
 const { TextField } = Incubator;
 
-export default function Landing() {
+export default function SignUp() {
   const [fullname, onChangeFullName] = React.useState(null);
   const [email, onChangeEmail] = React.useState(null);
   const [password, onChangePassword] = React.useState(null);
+
+  const submitForm = () => {
+    Auth.signUp({
+      username: email,
+      password,
+      attributes: {
+        email, // optional
+        fullname,
+      },
+      validationData: [], // optional
+    })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        if (err.message) {
+          setInvalidMessage(err.message);
+        }
+        console.log(err);
+      });
+  };
 
   return (
     <KeyboardAwareScrollView
@@ -50,11 +75,8 @@ export default function Landing() {
           placeholder="Enter Password"
           keyboardType="default"
         />
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.btntext}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.btntext}>Sign Up</Text>
+        <TouchableOpacity onPress={submitForm} style={styles.button}>
+          <Text style={styles.btntext}>Submit</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAwareScrollView>
@@ -64,9 +86,9 @@ export default function Landing() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "flex-start",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   input: {
     height: 40,
@@ -76,23 +98,23 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingRight: 50,
     paddingLeft: 20,
-    borderColor: "#e7e7f7",
+    borderColor: '#e7e7f7',
   },
   text: {
     fontSize: 44,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginTop: 100,
     marginBottom: 150,
   },
   button: {
-    backgroundColor: "black",
-    color: "#fff",
+    backgroundColor: 'black',
+    color: '#fff',
     paddingVertical: 15,
     marginBottom: 10,
     borderRadius: 5,
   },
   btntext: {
-    color: "#fff",
-    textAlign: "center",
+    color: '#fff',
+    textAlign: 'center',
   },
 });

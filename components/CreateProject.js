@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { StatusBar } from "expo-status-bar";
+import React, { useState } from 'react';
+import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
   View,
   Image,
   TextInput,
   TouchableOpacity,
-} from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+} from 'react-native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import {
   Assets,
   Colors,
@@ -19,36 +19,46 @@ import {
   Incubator,
   Avatar,
   Card,
-  Icon,
   TextField,
-} from "react-native-ui-lib"; //eslint-disable-line
-import { SafeAreaView } from "react-native-safe-area-context";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Poppins_300Light, Poppins_700Bold } from "@expo-google-fonts/poppins";
-import ProjectCard from "./ProjectCard";
-import { styleProps } from "react-native-web/dist/cjs/modules/forwardedProps";
-import Backarrow from "../assets/backarrow.png";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Dashboard from "./Dashboard";
-const axios = require("axios");
+} from 'react-native-ui-lib'; //eslint-disable-line
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Poppins_300Light, Poppins_700Bold } from '@expo-google-fonts/poppins';
+import ProjectCard from './ProjectCard';
+import { styleProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
+import Backarrow from '../assets/backarrow.png';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Dashboard from './Dashboard';
+import { useDidUpdate } from 'react-native-ui-lib/src/hooks';
+const axios = require('axios');
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
+import backArrow from '../assets/arrow-back-svgrepo-com.svg';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-export default function CreateProject(migrate, { navigation }) {
-  const [projName, setProjName] = useState("");
-  const [projDescription, setProjDescription] = useState("");
+export default function CreateProject(migrate) {
+  const [projName, setProjName] = useState('');
+  const [projDescription, setProjDescription] = useState('');
 
   const createProj = () => {
     // Creating axios call to backend
+    let projectId = uuidv4();
     axios
       // POST Request
-      .post("http://206.189.195.50:3000/api/project/add", {
-        projectTitle: projName,
-        description: projDescription,
-      })
+      .post(
+        'https://3820foa0lk.execute-api.us-east-1.amazonaws.com/default/createProject',
+        {
+          id: projectId,
+          projectTitle: projName,
+          projectDescription: projDescription,
+          currentUser: 'Rooter',
+        }
+      )
       // .then to navigate back to Dashboard once project is created
       .then(function (response) {
         if (response == 200) {
           console.log(response);
-          navigation.navigate("Dashboard");
+          navigation.navigate('Dashboard');
         }
       })
       // Catch an error if one exists
@@ -56,20 +66,25 @@ export default function CreateProject(migrate, { navigation }) {
         console.log(error);
       });
   };
-
+  const navigation = useNavigation();
   return (
     <KeyboardAwareScrollView>
       <View style={styles.header}>
-        <Icon style={styles.icon}></Icon>
+        <Icon.Button
+          name="arrow-back-outline"
+          size={28}
+          backgroundColor="#fff"
+          color="#000"
+          style={styles.icon}
+          onPress={() => navigation.goBack()}
+        ></Icon.Button>
         <Text style={styles.headertitle}>Create New Project</Text>
-        <TouchableOpacity style={styles.editBtn}>
-          <Text style={styles.editBtn}>Edit</Text>
-        </TouchableOpacity>
+        <TouchableOpacity style={styles.editBtn}></TouchableOpacity>
       </View>
       <View style={styles.formContainer}>
         <Text style={styles.projTitle}>Project Details</Text>
         <TextField
-          placeholder={"Project Name"}
+          placeholder={'Project Name'}
           floatingPlaceholder
           floatingPlaceholderColor="#1C1018"
           fieldStyle={styles.underline}
@@ -77,7 +92,7 @@ export default function CreateProject(migrate, { navigation }) {
           onChangeText={(text) => setProjName(text)}
         ></TextField>
         <TextField
-          placeholder={"Description"}
+          placeholder={'Description'}
           floatingPlaceholder
           floatingPlaceholderColor="#1C1018"
           fieldStyle={styles.underline}
@@ -97,63 +112,63 @@ export default function CreateProject(migrate, { navigation }) {
           </Button>
         </View>
       </View>
-      xx
     </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     paddingHorizontal: 0,
     paddingTop: 50,
     paddingBottom: 50,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    backgroundColor: "#fff",
-    flexDirection: "row",
-    alignItems: "center",
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 10,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   headertitle: {
     flex: 3,
-    fontFamily: "Poppins_700Bold",
+    fontFamily: 'Poppins_700Bold',
     fontSize: 18,
-    justifyContent: "center",
-    flexDirection: "column",
-    textAlign: "center",
+    justifyContent: 'center',
+    flexDirection: 'column',
+    textAlign: 'center',
   },
   icon: {
     flex: 1,
-    flexDirection: "column",
+    flexDirection: 'column',
+    marginLeft: 10,
   },
   editBtn: {
     flex: 1,
-    fontFamily: "Poppins_500Medium",
+    fontFamily: 'Poppins_500Medium',
     fontSize: 14,
-    textAlign: "center",
+    textAlign: 'center',
   },
   formContainer: {
     paddingHorizontal: 20,
     paddingVertical: 50,
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   projTitle: {
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 20,
-    fontFamily: "Poppins_600SemiBold",
+    fontFamily: 'Poppins_600SemiBold',
     paddingBottom: 30,
   },
   underline: {
-    borderColor: "#1C1018",
-    borderBottomColor: "#1C1018",
+    borderColor: '#1C1018',
+    borderBottomColor: '#1C1018',
   },
   btnText: {
-    color: "#fff",
-    fontFamily: "Poppins_600SemiBold",
+    color: '#fff',
+    fontFamily: 'Poppins_600SemiBold',
     fontSize: 20,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   btn: {
     marginTop: 290,

@@ -1,13 +1,13 @@
-import { StatusBar } from "expo-status-bar";
+import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
   View,
   Image,
   TextInput,
   TouchableOpacity,
-} from "react-native";
-import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+} from 'react-native';
+import * as React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import {
   Assets,
   Typography,
@@ -23,16 +23,19 @@ import {
   Colors,
   ExpandableSection,
   ExpandableSectionProps,
-} from "react-native-ui-lib"; //eslint-disable-line
-import { SafeAreaView } from "react-native-safe-area-context";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Poppins_300Light, Poppins_700Bold } from "@expo-google-fonts/poppins";
-import ProjectCard from "./ProjectCard";
-import { styleProps } from "react-native-web/dist/cjs/modules/forwardedProps";
-import Backarrow from "../assets/backarrow.png";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+} from 'react-native-ui-lib'; //eslint-disable-line
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Poppins_300Light, Poppins_700Bold } from '@expo-google-fonts/poppins';
+import ProjectCard from './ProjectCard';
+import { styleProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
+import Backarrow from '../assets/backarrow.png';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useState } from 'react';
 
 export default function CreateProject(props) {
+  const [expand, setExpand] = useState(false);
+
   return (
     <KeyboardAwareScrollView>
       <View style={styles.header}>
@@ -50,12 +53,39 @@ export default function CreateProject(props) {
       </View>
 
       <View style={styles.bucketContainer}>
-        <Text style={styles.bucketTitle}>Buckets</Text>
+        <View style={styles.bucketAdd}>
+          <Text style={styles.bucketTitle}>Buckets</Text>
+          <TouchableOpacity style={styles.bucketAddButton}>
+            <Text>Add</Text>
+          </TouchableOpacity>
+        </View>
         <View>
           <ExpandableSection
             expanded={true}
-            sectionHeader={<Text>Test</Text>}
+            top={false}
+            sectionHeader={
+              <View style={styles.bucketCat}>
+                <Text>Expandable Category</Text>
+                <Icon style={styles.icon}></Icon>
+              </View>
+            }
+            onPress={() => setExpand(!expand)}
           ></ExpandableSection>
+          {expand && (
+            <Card flexDirection="row">
+              <Card.Image
+                source={{
+                  uri: 'https://picsum.photos/200/300',
+                }}
+                height={80}
+                width={100}
+              />
+              <View flexDirection="flex-column" alignSelf="center">
+                <Text>Task Name</Text>
+                <Text>Task Due Date</Text>
+              </View>
+            </Card>
+          )}
         </View>
         <View style={styles.btn}>
           <Button
@@ -75,74 +105,85 @@ export default function CreateProject(props) {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     paddingHorizontal: 20,
     paddingTop: 50,
     paddingBottom: 30,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    backgroundColor: "#fff",
-    flexDirection: "column",
-    alignItems: "center",
+    backgroundColor: '#fff',
+    flexDirection: 'column',
+    alignItems: 'center',
     marginBottom: 0,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   headertitle: {
     flex: 3,
-    fontFamily: "Poppins_700Bold",
+    fontFamily: 'Poppins_700Bold',
     fontSize: 18,
-    justifyContent: "center",
-    flexDirection: "column",
-    textAlign: "center",
+    justifyContent: 'center',
+    flexDirection: 'column',
+    textAlign: 'center',
   },
   headerTitle2: {
-    textAlign: "left",
+    textAlign: 'left',
     fontSize: 14,
-    fontFamily: "Poppins_600SemiBold",
+    fontFamily: 'Poppins_600SemiBold',
     paddingVertical: 20,
   },
   projDescription: {
-    color: "#989595",
+    color: '#989595',
     fontSize: 12,
-    fontFamily: "Poppins_500Medium",
+    fontFamily: 'Poppins_500Medium',
   },
   icon: {
     flex: 1,
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   editBtn: {
     flex: 1,
-    fontFamily: "Poppins_500Medium",
+    fontFamily: 'Poppins_500Medium',
     fontSize: 14,
-    textAlign: "center",
+    textAlign: 'right',
   },
   row1: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   row2: {
-    flexDirection: "column",
-    alignSelf: "flex-start",
+    flexDirection: 'column',
+    alignSelf: 'flex-start',
+  },
+  bucketAdd: {
+    flexDirection: 'row',
+  },
+  bucketAddButton: {
+    flex: 1,
+    textAlign: 'right',
+    flexDirection: 'row-reverse',
   },
   bucketContainer: {
     paddingHorizontal: 20,
     paddingVertical: 30,
-    flexDirection: "column",
+    flexDirection: 'column',
   },
   bucketTitle: {
-    textAlign: "left",
+    textAlign: 'left',
+    flex: 1,
     fontSize: 20,
-    fontFamily: "Poppins_600SemiBold",
+    fontFamily: 'Poppins_600SemiBold',
     paddingBottom: 30,
+    flexDirection: 'column',
+    alignSelf: 'flex-start',
   },
   underline: {
-    borderColor: "#1C1018",
-    borderBottomColor: "#1C1018",
+    borderColor: '#1C1018',
+    borderBottomColor: '#1C1018',
   },
   btnText: {
-    color: "#fff",
-    fontFamily: "Poppins_600SemiBold",
+    color: '#fff',
+    fontFamily: 'Poppins_600SemiBold',
     fontSize: 20,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   btn: {
     marginTop: 280,
