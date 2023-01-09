@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Dashboard from './Dashboard';
 import EditProject from './EditProject';
+import CreateProject from './CreateProject';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,6 +16,11 @@ export default function TabNav(props) {
         <Tab.Screen
           name="Home"
           component={Dashboard}
+          options={({ route }) => ({ tabBarShowLabel: false })}
+        />
+        <Tab.Screen
+          name="CreateProject"
+          component={CreateProject}
           options={({ route }) => ({ tabBarShowLabel: false })}
         />
       </Tab.Navigator>

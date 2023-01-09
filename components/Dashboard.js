@@ -18,6 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Poppins_300Light, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import ProjectCard from './ProjectCard';
+import CreateProject from './CreateProject';
 import { useEffect } from 'react';
 const axios = require('axios');
 
@@ -66,7 +67,9 @@ export default function Dashboard({ props, navigation }) {
       </View>
       <View style={styles.projects}>
         <Text style={styles.projtitle}>Projects</Text>
-        <Text>Add Project</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('CreateProject')}>
+          <Text>Add Project</Text>
+        </TouchableOpacity>
         <ProjectCard projectTitle="Web App" date="January" />
       </View>
     </View>
