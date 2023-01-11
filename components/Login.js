@@ -1,7 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import {
   Assets,
   Colors,
@@ -12,14 +10,13 @@ import {
   Keyboard,
   Incubator,
 } from 'react-native-ui-lib'; //eslint-disable-line
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
-const { TextField } = Incubator;
+import { AuthContext } from './contexts/AuthContext';
 
 export default function Login() {
   const [email, onChangeEmail] = React.useState(null);
   const [password, onChangePassword] = React.useState(null);
+  const { signIn } = React.useContext(AuthContext);
 
   return (
     <KeyboardAwareScrollView
@@ -42,7 +39,7 @@ export default function Login() {
           placeholder="Enter Password"
           keyboardType="default"
         />
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity onPress={() => signIn({ email, password })} style={styles.button}>
           <Text style={styles.btntext}>Login</Text>
         </TouchableOpacity>
       </View>

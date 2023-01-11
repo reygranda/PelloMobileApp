@@ -20,14 +20,19 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Poppins_300Light, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import ProjectCard from './ProjectCard';
 import CreateProject from './CreateProject';
+import { Amplify, Auth } from 'aws-amplify';
 import { useEffect } from 'react';
 const axios = require('axios');
+import { AuthContext } from './contexts/AuthContext';
+
+
 
 export default function Dashboard({ props, navigation }) {
   // const userId = props.userId
   const userId = '62504c20cd149d35c0719fb8';
   const [projects, setProjects] = React.useState(null);
   //   const [password, onChangePassword] = React.useState(null);
+  const { signOut } = React.useContext(AuthContext);
 
   useEffect(() => {
     async function fetchData() {
@@ -52,6 +57,7 @@ export default function Dashboard({ props, navigation }) {
     fetchData();
   }, []);
 
+
   return (
     <View style={styles.container}>
       <View style={styles.user}>
@@ -59,12 +65,14 @@ export default function Dashboard({ props, navigation }) {
           <Text style={styles.username}>Rey Granda</Text>
           <Text style={styles.welcome}>Hello,</Text>
         </View>
-        <Avatar
-          style={styles.avatar}
-          source={{
-            uri: 'https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg',
-          }}
-        />
+        <TouchableOpacity onPress={signOut}>
+          <Avatar
+            style={styles.avatar}
+            source={{
+              uri: 'https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg',
+            }}
+          />
+        </TouchableOpacity>
       </View>
       <View style={styles.projects}>
         <Text style={styles.projtitle}>Projects</Text>
