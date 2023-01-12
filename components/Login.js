@@ -16,7 +16,9 @@ import { AuthContext } from './contexts/AuthContext';
 export default function Login() {
   const [email, onChangeEmail] = React.useState(null);
   const [password, onChangePassword] = React.useState(null);
-  const { signIn } = React.useContext(AuthContext);
+  const { signIn, error } = React.useContext(AuthContext);
+
+  console.log(error)
 
   return (
     <KeyboardAwareScrollView
@@ -42,6 +44,7 @@ export default function Login() {
         <TouchableOpacity onPress={() => signIn({ email, password })} style={styles.button}>
           <Text style={styles.btntext}>Login</Text>
         </TouchableOpacity>
+        {error && <Text>{error}</Text>}
       </View>
     </KeyboardAwareScrollView>
   );
