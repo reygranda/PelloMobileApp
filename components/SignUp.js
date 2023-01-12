@@ -25,25 +25,33 @@ export default function SignUp() {
   const [fullname, onChangeFullName] = React.useState(null);
   const [email, onChangeEmail] = React.useState(null);
   const [password, onChangePassword] = React.useState(null);
+  const [signUpIssue, onChangeSignUpIssue] = React.useState(null);
 
   const submitForm = () => {
     Auth.signUp({
       username: email,
-      password,
+      password: password,
       attributes: {
-        email, // optional
-        fullname,
-      },
-      validationData: [], // optional
+        email:email
+      }
     })
       .then((data) => {
+        console.log('here');
         console.log(data);
+        //need to add the connection to dynamo to create the user
       })
       .catch((err) => {
         if (err.message) {
-          setInvalidMessage(err.message);
+          console.log(err.message)
+          let cleanedMessage = err.message.split(': ')[1]
+          if (err.message.split(': ').length == 1) {
+            onChangeSignUpIssue(err.message)
+          }
+          else {
+            onChangeSignUpIssue(cleanedMessage)
+          }
+          console.log(signUpIssue);
         }
-        console.log(err);
       });
   };
 
@@ -78,6 +86,7 @@ export default function SignUp() {
         <TouchableOpacity onPress={submitForm} style={styles.button}>
           <Text style={styles.btntext}>Submit</Text>
         </TouchableOpacity>
+        {signUpIssue && <Text>{signUpIssue}</Text>}
       </View>
     </KeyboardAwareScrollView>
   );
