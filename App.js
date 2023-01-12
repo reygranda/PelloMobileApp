@@ -31,6 +31,8 @@ import Login from './components/Login';
 import { AuthContext } from './components/contexts/AuthContext';
 import { Amplify, Auth } from 'aws-amplify';
 import awsconfig from './components/aws-exports';
+import SignUp from './components/SignUp';
+const axios = require('axios');
 
 Amplify.configure(awsconfig);
 Auth.configure(awsconfig)
@@ -43,6 +45,15 @@ function Home() {
       <Tab.Screen name="Dashboard" component={Dashboard} />
       <Tab.Screen name="CreateProject" component={CreateProject} />
     </Tab.Navigator>
+  );
+}
+
+function AuthStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="Login" component={Login} options={{title: 'Login'}}/>
+      <Stack.Screen name="SignUp" component={SignUp} options={{title: 'Signup', headerBackVisible: false}}/>
+    </Stack.Navigator>
   );
 }
 
@@ -120,8 +131,8 @@ export default function App() {
           dispatch({ type: 'RESTORE_TOKEN', token: userToken });
         })
       } catch (e) {
-        // Restoring token failed
       }
+      dispatch({ type: 'RESTORE_TOKEN', token: null });
     };
 
     bootstrapAsync();
@@ -147,28 +158,46 @@ export default function App() {
     dispatch({ type: 'SIGN_OUT' })
   }
 
-  const signUp = async () => {
-    await Auth.signUp({
-      username: data.email,
-      password: data.password,
-      attributes: {
-          email: data.email,        
-      }
-    }).then(data => {
-        let accessToken = res.getAccessToken()
-        let jwt = accessToken.getJwtToken()
-        dispatch({ type: 'SIGN_IN', token: jwt });
+  const signUp = async (data) => {
+    try {
+      await Auth.signUp({
+        username: data.email,
+        password: data.password,
+        attributes: {
+            email: data.email,        
+        }
       })
-      .catch(err => {
-        setError(err.message)
-        console.log(err.message);
-      });
+      await Auth.signIn(data.email, data.password)
+      await axios.post(
+        'https://3820foa0lk.execute-api.us-east-1.amazonaws.com/default/createUser',
+        {
+          email: data.email,
+          fullname: data.fullname
+        }
+      ).then(function (response) {
+          console.log(response)
+          if (response == 200) {
+            console.log(response)
+          }
+        })
+        .catch(function (error) {
+          setError(error.message)
+          console.log(error.message);
+        });
+      let res = await Auth.currentSession()
+      let accessToken = res.getAccessToken()
+      let jwt = accessToken.getJwtToken()
+      dispatch({ type: 'SIGN_IN', token: jwt });
+    }
+    catch (e) {
+      setError(e.message)
+    }  
   }
 
 
   return (
     <AuthContext.Provider value={{signIn, signOut, signUp, error}}>
-      {console.log(state.userToken)}
+      {console.log(state.isLoading)}
       <NavigationContainer>
         <Stack.Navigator>
           {state.isLoading ? (
@@ -177,13 +206,9 @@ export default function App() {
           ) : state.userToken == null ? (
             // No token found, user isn't signed in
             <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{
-                title: 'Login',
-                // When logging out, a pop animation feels intuitive
-                animationTypeForReplace: state.isSignout ? 'pop' : 'push',
-              }}
+              name="AuthStack"
+              component={AuthStack}
+              options={{ headerShown: false }}
             />
           ) : (
             // User is signed in
