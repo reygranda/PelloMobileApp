@@ -12,11 +12,15 @@ import {
 } from 'react-native-ui-lib'; //eslint-disable-line
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { AuthContext } from './contexts/AuthContext';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Login() {
   const [email, onChangeEmail] = React.useState(null);
   const [password, onChangePassword] = React.useState(null);
-  const { signIn } = React.useContext(AuthContext);
+  const { signIn, error } = React.useContext(AuthContext);
+  const navigator = useNavigation();
+
+  console.log(error)
 
   return (
     <KeyboardAwareScrollView
@@ -42,6 +46,10 @@ export default function Login() {
         <TouchableOpacity onPress={() => signIn({ email, password })} style={styles.button}>
           <Text style={styles.btntext}>Login</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigator.navigate("SignUp")} style={styles.button}>
+          <Text style={styles.btntext}>Go to SignUp</Text>
+        </TouchableOpacity>
+        {error && <Text>{error}</Text>}
       </View>
     </KeyboardAwareScrollView>
   );

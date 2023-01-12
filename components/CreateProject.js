@@ -35,14 +35,17 @@ import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import backArrow from '../assets/arrow-back-svgrepo-com.svg';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { Amplify, Auth } from 'aws-amplify';
 
 export default function CreateProject(migrate) {
   const [projName, setProjName] = useState('');
   const [projDescription, setProjDescription] = useState('');
+  const navigation = useNavigation();
 
-  const createProj = () => {
+  const createProj = async () => {
     // Creating axios call to backend
     let projectId = uuidv4();
+    const {attributes} = await Auth.currentAuthenticatedUser();
     axios
       // POST Request
       .post(
@@ -51,22 +54,20 @@ export default function CreateProject(migrate) {
           id: projectId,
           projectTitle: projName,
           projectDescription: projDescription,
-          currentUser: 'Rooter',
+          currentUser: attributes.email
         }
       )
-      // .then to navigate back to Dashboard once project is created
       .then(function (response) {
-        if (response == 200) {
+        if (response.status == 200) {
           console.log(response);
           navigation.navigate('Dashboard');
         }
       })
-      // Catch an error if one exists
       .catch(function (error) {
         console.log(error);
       });
   };
-  const navigation = useNavigation();
+  
   return (
     <KeyboardAwareScrollView>
       <View style={styles.header}>

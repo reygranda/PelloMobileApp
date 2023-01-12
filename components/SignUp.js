@@ -14,46 +14,16 @@ import {
 } from 'react-native-ui-lib'; //eslint-disable-line
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { CognitoUserPool } from './UserPool';
-import { Amplify, Auth } from 'aws-amplify';
-import awsconfig from './aws-exports';
+import { AuthContext } from './contexts/AuthContext';
+import { useNavigation } from '@react-navigation/native';
 
-Amplify.configure(awsconfig);
-const { TextField } = Incubator;
 
 export default function SignUp() {
   const [fullname, onChangeFullName] = React.useState(null);
   const [email, onChangeEmail] = React.useState(null);
   const [password, onChangePassword] = React.useState(null);
-  const [signUpIssue, onChangeSignUpIssue] = React.useState(null);
-
-  const submitForm = () => {
-    Auth.signUp({
-      username: email,
-      password: password,
-      attributes: {
-        email:email
-      }
-    })
-      .then((data) => {
-        console.log('here');
-        console.log(data);
-        //need to add the connection to dynamo to create the user
-      })
-      .catch((err) => {
-        if (err.message) {
-          console.log(err.message)
-          let cleanedMessage = err.message.split(': ')[1]
-          if (err.message.split(': ').length == 1) {
-            onChangeSignUpIssue(err.message)
-          }
-          else {
-            onChangeSignUpIssue(cleanedMessage)
-          }
-          console.log(signUpIssue);
-        }
-      });
-  };
+  const { signUp, error } = React.useContext(AuthContext);
+  const navigator = useNavigation();
 
   return (
     <KeyboardAwareScrollView
@@ -83,10 +53,13 @@ export default function SignUp() {
           placeholder="Enter Password"
           keyboardType="default"
         />
-        <TouchableOpacity onPress={submitForm} style={styles.button}>
+        <TouchableOpacity onPress={() => signUp({ fullname, email, password })} style={styles.button}>
           <Text style={styles.btntext}>Submit</Text>
         </TouchableOpacity>
-        {signUpIssue && <Text>{signUpIssue}</Text>}
+        <TouchableOpacity onPress={() => navigator.navigate("Login")} style={styles.button}>
+          <Text style={styles.btntext}>Go to Login</Text>
+        </TouchableOpacity>
+        {error && <Text>{error}</Text>}
       </View>
     </KeyboardAwareScrollView>
   );

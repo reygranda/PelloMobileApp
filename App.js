@@ -31,6 +31,8 @@ import Login from './components/Login';
 import { AuthContext } from './components/contexts/AuthContext';
 import { Amplify, Auth } from 'aws-amplify';
 import awsconfig from './components/aws-exports';
+import SignUp from './components/SignUp';
+const axios = require('axios');
 
 Amplify.configure(awsconfig);
 Auth.configure(awsconfig)
@@ -46,7 +48,22 @@ function Home() {
   );
 }
 
+function AuthStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="Login" component={Login} options={{title: 'Login'}}/>
+      <Stack.Screen name="SignUp" component={SignUp} options={{title: 'Signup', headerBackVisible: false}}/>
+    </Stack.Navigator>
+  );
+}
+
 export default function App() {
+
+  const [error, setError] = React.useState(null);
+
+  const changeError = (message) => {
+    setError(message)
+  }
 
   let [fontsLoaded] = useFonts({
     Poppins_100Thin,
@@ -102,72 +119,85 @@ export default function App() {
   React.useEffect(() => {
         // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
-      let userToken;
-
+      var userToken;
       try {
         Auth.currentSession().then(res=>{
           let accessToken = res.getAccessToken()
-          let jwt = accessToken.getJwtToken()})
+          let jwt = accessToken.getJwtToken()
           userToken = jwt
+          //console.log(userToken)
+          setError(null)
+          console.log(userToken)
+          dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+        })
       } catch (e) {
-        // Restoring token failed
       }
-
-      // After restoring token, we may need to validate it in production apps
-
-      // This will switch to the App screen or Auth screen and this loading
-      // screen will be unmounted and thrown away.
-      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+      dispatch({ type: 'RESTORE_TOKEN', token: null });
     };
 
     bootstrapAsync();
   }, []);
 
-  const authContext = React.useMemo(
-    () => ({
-      signIn: async (data) => {
-        console.log(data.email, data.password)
-        await Auth.signIn(data.email, data.password);
-        let jwt = null
-        let accessToken = null
-        Auth.currentSession().then(res=>{
-        accessToken = res.getAccessToken()
-        jwt = accessToken.getJwtToken()
-            
-        //You can print them to see the full objects
-        console.log(`myAccessToken: ${JSON.stringify(accessToken)}`)
-        console.log(`myJwt: ${jwt}`)
-        dispatch({ type: 'SIGN_IN', token: jwt });
+  const signIn = async (data) => {
+    try {
+      console.log(data.email, data.password)
+      await Auth.signIn(data.email, data.password);
+      let res = await Auth.currentSession()
+      let accessToken = res.getAccessToken()
+      let jwt = accessToken.getJwtToken()
+      console.log(`myAccessToken: ${JSON.stringify(accessToken)}`)
+      dispatch({ type: 'SIGN_IN', token: jwt });
+    } catch(e) {
+      setError(e.message)
+    }
+  }
+  
+  const signOut = async () => {
+    await Auth.signOut()
+    setError(null)
+    dispatch({ type: 'SIGN_OUT' })
+  }
+
+  const signUp = async (data) => {
+    try {
+      await Auth.signUp({
+        username: data.email,
+        password: data.password,
+        attributes: {
+            email: data.email,        
+        }
+      })
+      await Auth.signIn(data.email, data.password)
+      await axios.post(
+        'https://3820foa0lk.execute-api.us-east-1.amazonaws.com/default/createUser',
+        {
+          email: data.email,
+          fullname: data.fullname
+        }
+      ).then(function (response) {
+          console.log(response)
+          if (response == 200) {
+            console.log(response)
+          }
         })
-        
-      },
-      signOut: async () => {
-        await Auth.signOut()
-        dispatch({ type: 'SIGN_OUT' })
-      },
-      signUp: async (data) => {
-        await Auth.signUp({
-            username: data.email,
-            password: data.password,
-            attributes: {
-                email: data.email,        
-            }
-        }).then(data => {
-            let accessToken = res.getAccessToken()
-            let jwt = accessToken.getJwtToken()
-            dispatch({ type: 'SIGN_IN', token: jwt });
-          })
-          .catch(err => {
-            console.log(err.message);
-          });
-        
-      },
-    }),
-    []
-  );
+        .catch(function (error) {
+          setError(error.message)
+          console.log(error.message);
+        });
+      let res = await Auth.currentSession()
+      let accessToken = res.getAccessToken()
+      let jwt = accessToken.getJwtToken()
+      dispatch({ type: 'SIGN_IN', token: jwt });
+    }
+    catch (e) {
+      setError(e.message)
+    }  
+  }
+
 
   return (
-    <AuthContext.Provider value={authContext}>
+    <AuthContext.Provider value={{signIn, signOut, signUp, error}}>
+      {console.log(state.isLoading)}
       <NavigationContainer>
         <Stack.Navigator>
           {state.isLoading ? (
@@ -176,13 +206,9 @@ export default function App() {
           ) : state.userToken == null ? (
             // No token found, user isn't signed in
             <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{
-                title: 'Login',
-                // When logging out, a pop animation feels intuitive
-                animationTypeForReplace: state.isSignout ? 'pop' : 'push',
-              }}
+              name="AuthStack"
+              component={AuthStack}
+              options={{ headerShown: false }}
             />
           ) : (
             // User is signed in
@@ -193,12 +219,6 @@ export default function App() {
     </AuthContext.Provider>
   )  
   }
-
-
-  
-    
-
-
 
 const styles = StyleSheet.create({
   container: {
