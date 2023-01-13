@@ -18,14 +18,15 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Poppins_300Light, Poppins_700Bold } from '@expo-google-fonts/poppins';
+
 import ProjectCard from './ProjectCard';
 import CreateProject from './CreateProject';
 import { Amplify, Auth } from 'aws-amplify';
 import { useEffect } from 'react';
 const axios = require('axios');
 import { AuthContext } from './contexts/AuthContext';
-
-export default function Dashboard({ props, navigation }) {
+import { loadAsync } from 'expo-font';
+export default function UserProfile({ props, navigation }) {
   // const userId = props.userId
   const userId = '62504c20cd149d35c0719fb8';
   const [projects, setProjects] = React.useState(null);
@@ -59,27 +60,18 @@ export default function Dashboard({ props, navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.user}>
-        <View>
-          <Text style={styles.username}>Rey Granda</Text>
-          <Text style={styles.welcome}>Hello,</Text>
-        </View>
-        <TouchableOpacity onPress={signOut}>
-          <Avatar
-            style={styles.avatar}
-            source={{
-              uri: 'https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg',
-            }}
-          />
+        <Text style={styles.username}>Rey Granda</Text>
+        <TouchableOpacity>
+          <Text style={styles.welcome}>Edit Image</Text>
         </TouchableOpacity>
-      </View>
-      <View style={styles.projects}>
-        <Text style={styles.projtitle}>Projects</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('CreateProject')}>
-          <Text>Add Project</Text>
-        </TouchableOpacity>
-        <View style={styles.projCard}>
-          <ProjectCard projectTitle="Web App" date="January" />
-        </View>
+
+        <Avatar
+          style={styles.avatar}
+          source={{
+            uri: 'https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg',
+          }}
+          size={80}
+        />
       </View>
     </View>
   );
@@ -92,16 +84,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
-  projects: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingTop: 20,
-  },
-  projtitle: {
-    fontFamily: 'Poppins_700Bold',
-    fontSize: 18,
-    paddingBottom: 30,
-  },
+
   user: {
     backgroundColor: '#fff',
     paddingHorizontal: 20,
@@ -110,20 +93,19 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     backgroundColor: '#fff',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   username: {
     fontFamily: 'Poppins_700Bold',
     fontSize: 24,
+    paddingBottom: 10,
   },
   welcome: {
     color: '#989595',
     fontFamily: 'Poppins_400Regular',
     fontSize: 14,
-  },
-  projCard: {
-    marginVertical: 20,
+    paddingBottom: 15,
   },
 });
