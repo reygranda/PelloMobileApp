@@ -26,7 +26,9 @@ import { AuthContext } from './contexts/AuthContext';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 
+
 export default function Dashboard({ navigation }) {
+
   // const userId = props.userId
   const [projects, setProjects] = React.useState(null);
   const isFocused = useIsFocused();
@@ -34,12 +36,15 @@ export default function Dashboard({ navigation }) {
 
   useEffect(() => {
     async function fetchData() {
+
       if(isFocused){ 
         getInitialData();
     }
+
     }
     fetchData();
   }, [isFocused]);
+
 
   const getInitialData = async () => {
       const {attributes} = await Auth.currentAuthenticatedUser();
