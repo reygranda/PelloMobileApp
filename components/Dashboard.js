@@ -1,8 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TextInput, TouchableOpacity, ScrollView, Pressable } from 'react-native';
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-
+import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import {
   Assets,
   Colors,
@@ -24,65 +23,60 @@ import { Amplify, Auth } from 'aws-amplify';
 import { useEffect } from 'react';
 const axios = require('axios');
 import { AuthContext } from './contexts/AuthContext';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 
-
-export default function Dashboard({ props, navigation }) {
+export default function Dashboard({ navigation }) {
   // const userId = props.userId
-  const userId = '62504c20cd149d35c0719fb8';
   const [projects, setProjects] = React.useState(null);
-  //   const [password, onChangePassword] = React.useState(null);
+  const isFocused = useIsFocused();
   const { signOut } = React.useContext(AuthContext);
 
   useEffect(() => {
     async function fetchData() {
-      axios({
-        method: 'GET',
-        url: 'http://206.189.195.50:3000/api/project/getusersprojects',
-        data: {
-          userid: userId,
-        },
-        'Content-Length': '854',
-        'Content-Type': 'application/json;charset=utf-8',
-        'Access-Control-Allow-Origin': '*',
-      })
-        .then(function (response) {
-          console.log(response);
-          setProjects(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      if(isFocused){ 
+        getInitialData();
+    }
     }
     fetchData();
-  }, []);
+  }, [isFocused]);
 
+  const getInitialData = async () => {
+      const {attributes} = await Auth.currentAuthenticatedUser();
+      const res = await axios.get('https://3820foa0lk.execute-api.us-east-1.amazonaws.com/default/getUsersProjectPython', { params: { email: attributes.email } });
+      await setProjects(res.data)
+    } 
 
   return (
     <View style={styles.container}>
-      <View style={styles.user}>
-        <View>
-          <Text style={styles.username}>Rey Granda</Text>
-          <Text style={styles.welcome}>Hello,</Text>
+      {projects === null && <Spinner color='black'/> }
+      {projects &&
+      <View>
+        <View style={styles.user}>
+          <View>
+            <Text style={styles.username}>Rey Granda</Text>
+            <Text style={styles.welcome}>Hello,</Text>
+          </View>
+          <TouchableOpacity onPress={signOut}>
+            <Avatar
+              style={styles.avatar}
+              source={{
+                uri: 'https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg',
+              }}
+            />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={signOut}>
-          <Avatar
-            style={styles.avatar}
-            source={{
-              uri: 'https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg',
-            }}
-          />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.projects}>
-        <Text style={styles.projtitle}>Projects</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('CreateProject')}>
-          <Text>Add Project</Text>
-        </TouchableOpacity>
-        <View style={styles.projCard}>
-          <ProjectCard projectTitle="Web App" date="January" />
+        <View style={styles.projects}>
+          <Text style={styles.projtitle}>Projects</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('CreateProject')}>
+            <Text>Add Project</Text>
+          </TouchableOpacity>
+          <ScrollView style={styles.projCard}>
+            {projects.map((item,i) => <ProjectCard key={i} projectTitle={item.projectTitle} date="January" />)}
+          </ScrollView>
         </View>
       </View>
+      }
     </View>
   );
 }
@@ -127,5 +121,6 @@ const styles = StyleSheet.create({
   },
   projCard: {
     marginVertical: 20,
+    height: 550
   },
 });
