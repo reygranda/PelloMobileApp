@@ -1,8 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import {
   Assets,
   Colors,
@@ -26,8 +25,26 @@ import { useEffect } from 'react';
 const axios = require('axios');
 import { AuthContext } from './contexts/AuthContext';
 import { loadAsync } from 'expo-font';
-export default function UserProfile({ props, navigation }) {
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+
+const SettingButton = ({name, navigation}) => {
+  return(
+    <TouchableOpacity style = {styles.itemContainer} onPress = { () => navigation.navigate('Dashboard')}>
+        <Text style = {styles.settingsText}> {name} </Text>
+        <Icon.Button
+              name="arrow-forward"
+              size={28}
+              backgroundColor="#A9A9A9"
+              color="#fff"
+              style={styles.icon}
+            ></Icon.Button>
+    </TouchableOpacity>
+  );
+}
+
+export default function UserProfile({ props}) {
   // const userId = props.userId
+  const navigation = useNavigation();
   const userId = '62504c20cd149d35c0719fb8';
   const [projects, setProjects] = React.useState(null);
   //   const [password, onChangePassword] = React.useState(null);
@@ -73,7 +90,13 @@ export default function UserProfile({ props, navigation }) {
           size={80}
         />
       </View>
+      <Text style={{margin: 20}}> Settings </Text>
+      <View style = {styles.settingView}>
+        <SettingButton name = "Change Password" navigation = {navigation}/>
+        <SettingButton name = "Change Name" navigation = {navigation}/>
+      </View>
     </View>
+    
   );
 }
 
@@ -84,7 +107,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
-
   user: {
     backgroundColor: '#fff',
     paddingHorizontal: 20,
@@ -92,7 +114,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
-    backgroundColor: '#fff',
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -108,4 +129,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     paddingBottom: 15,
   },
+  itemContainer: {
+    backgroundColor: "#A9A9A9",
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginVertical: 5,
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+    borderRadius: 5
+  },
+  settingsText: {
+    color: '#fff',
+    fontFamily: 'Poppins_400Regular',
+  },
+  settingView: {
+    flex: 1
+  },
+  icon: {
+  }
 });

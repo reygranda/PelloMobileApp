@@ -34,6 +34,7 @@ export default function Login() {
           onChangeText={onChangeEmail}
           value={email}
           placeholder="Enter Email"
+          placeholderTextColor="#989595"
           keyboardType="default"
         />
         <TextInput
@@ -41,6 +42,7 @@ export default function Login() {
           onChangeText={onChangePassword}
           value={password}
           placeholder="Enter Password"
+          placeholderTextColor="#989595"
           keyboardType="default"
         />
         <TouchableOpacity onPress={() => signIn({ email, password })} style={styles.button}>
