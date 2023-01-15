@@ -18,7 +18,6 @@ import {
   Incubator,
   Avatar,
   Card,
-  Icon,
   TextField,
   Colors,
   ExpandableSection,
@@ -29,6 +28,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Poppins_300Light, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import ProjectCard from './ProjectCard';
 import { styleProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Backarrow from '../assets/backarrow.png';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useState } from 'react';
@@ -40,7 +40,13 @@ export default function CreateProject(props) {
     <KeyboardAwareScrollView>
       <View style={styles.header}>
         <View style={styles.row1}>
-          <Icon style={styles.icon}></Icon>
+          <Icon.Button
+            style={styles.icon}
+            name="arrow-back"
+            size={28}
+            backgroundColor="#fff"
+            color="#000"
+          ></Icon.Button>
           <Text style={styles.headertitle}>Project Name</Text>
           <TouchableOpacity style={styles.editBtn}>
             <Text style={styles.editBtn}>Edit</Text>
@@ -71,8 +77,9 @@ export default function CreateProject(props) {
             }
             onPress={() => setExpand(!expand)}
           ></ExpandableSection>
+
           {expand && (
-            <Card flexDirection="row">
+            <Card marginTop={10} marginBottom={20} flexDirection="row">
               <Card.Image
                 source={{
                   uri: 'https://picsum.photos/200/300',
@@ -93,9 +100,9 @@ export default function CreateProject(props) {
             backgroundColor="#1C1018"
             size="large"
             color="#fff"
-            style={styles.Btn}
+            style={styles.btn}
           >
-            <Text style={styles.btnText}>Create</Text>
+            <Text style={styles.btnText}>Createff</Text>
           </Button>
         </View>
       </View>
@@ -117,13 +124,13 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     justifyContent: 'center',
   },
+
   headertitle: {
-    flex: 3,
     fontFamily: 'Poppins_700Bold',
     fontSize: 18,
-    justifyContent: 'center',
-    flexDirection: 'column',
-    textAlign: 'center',
+  },
+  icon: {
+    marginLeft: -10,
   },
   headerTitle2: {
     textAlign: 'left',
@@ -136,18 +143,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'Poppins_500Medium',
   },
-  icon: {
-    flex: 1,
-    flexDirection: 'column',
-  },
   editBtn: {
-    flex: 1,
     fontFamily: 'Poppins_500Medium',
     fontSize: 14,
-    textAlign: 'right',
   },
   row1: {
     flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: 'space-between',
   },
   row2: {
     flexDirection: 'column',
@@ -155,6 +159,8 @@ const styles = StyleSheet.create({
   },
   bucketAdd: {
     flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 30,
   },
   bucketAddButton: {
     flex: 1,
@@ -167,13 +173,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   bucketTitle: {
-    textAlign: 'left',
-    flex: 1,
     fontSize: 20,
     fontFamily: 'Poppins_600SemiBold',
-    paddingBottom: 30,
-    flexDirection: 'column',
-    alignSelf: 'flex-start',
   },
   underline: {
     borderColor: '#1C1018',
@@ -187,5 +188,12 @@ const styles = StyleSheet.create({
   },
   btn: {
     marginTop: 280,
+  },
+  bucketCat: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    paddingVertical: 20,
+    borderRadius: 5,
+    paddingHorizontal: 10,
   },
 });

@@ -36,6 +36,8 @@ import { Amplify, Auth } from 'aws-amplify';
 import awsconfig from './components/aws-exports';
 import SignUp from './components/SignUp';
 import UserProfile from './components/UserProfile';
+import ViewProject from './components/ViewProject';
+import ChangePassword from './components/ChangePassword';
 import * as Font from 'expo-font';
 const axios = require('axios');
 
@@ -47,9 +49,10 @@ const Tab = createBottomTabNavigator();
 function Home() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
-      <Tab.Screen name="UserProfile" component={UserProfile} />
       <Tab.Screen name="Dashboard" component={Dashboard} />
       <Tab.Screen name="CreateProject" component={CreateProject} />
+      <Tab.Screen name="UserProfile" component={UserProfile} />
+      <Tab.Screen name="ViewProject" component={ViewProject} />
     </Tab.Navigator>
   );
 }
@@ -237,6 +240,11 @@ export default function App() {
               options={{ headerShown: false }}
             />
           )}
+          <Stack.Screen
+            name="ChangePassword"
+            component={ChangePassword}
+            options={{ headerShown: false }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>
