@@ -39,6 +39,7 @@ import UserProfile from './components/UserProfile';
 import ViewProject from './components/ViewProject';
 import ChangePassword from './components/ChangePassword';
 import * as Font from 'expo-font';
+import Task from './components/Task';
 const axios = require('axios');
 
 Amplify.configure(awsconfig);
@@ -52,6 +53,7 @@ function Home() {
       <Tab.Screen name="Dashboard" component={Dashboard} />
       <Tab.Screen name="CreateProject" component={CreateProject} />
       <Tab.Screen name="UserProfile" component={UserProfile} />
+      <Tab.Screen name="Task" component={Task} />
       <Tab.Screen name="ViewProject" component={ViewProject} />
     </Tab.Navigator>
   );

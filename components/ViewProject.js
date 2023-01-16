@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import {
   Assets,
   Typography,
@@ -31,11 +31,32 @@ import { styleProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Backarrow from '../assets/backarrow.png';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useState } from 'react';
+import { useState, useEffect, isFocused } from 'react';
+import { getItemLabel } from 'react-native-ui-lib/src/components/picker/PickerPresenter';
+const axios = require('axios');
 
-export default function CreateProject(props) {
+export default function CreateProject({ route, navigation }) {
   const [expand, setExpand] = useState(false);
+  const [projects, setProjects] = React.useState('');
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    async function fetchData() {
+      if (isFocused) {
+        getInitialData();
+      }
+    }
+    fetchData();
+  }, [isFocused]);
 
+  const getInitialData = async () => {
+    const { attributes } = await Auth.currentAuthenticatedUser();
+    const res = await axios.get(
+      'https://3820foa0lk.execute-api.us-east-1.amazonaws.com/default/getUsersProjectPython',
+      { params: { email: attributes.email } }
+    );
+    await setProjects(res.data);
+  };
+  const { projectTitle, description } = route.params;
   return (
     <KeyboardAwareScrollView>
       <View style={styles.header}>
@@ -47,14 +68,15 @@ export default function CreateProject(props) {
             backgroundColor="#fff"
             color="#000"
           ></Icon.Button>
-          <Text style={styles.headertitle}>Project Name</Text>
+
+          <Text style={styles.headertitle}>{projectTitle}</Text>
           <TouchableOpacity style={styles.editBtn}>
             <Text style={styles.editBtn}>Edit</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.row2}>
           <Text style={styles.headerTitle2}>Description</Text>
-          <Text style={styles.projDescription}>Project Description</Text>
+          <Text style={styles.projDescription}>{description}</Text>
         </View>
       </View>
 

@@ -21,7 +21,6 @@ import {
   Avatar,
   Card,
 } from 'react-native-ui-lib'; //eslint-disable-line
-
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -71,7 +70,6 @@ export default function Dashboard({ navigation }) {
             </View>
             <TouchableOpacity onPress={signOut}>
               <Avatar
-                style={styles.avatar}
                 source={{
                   uri: 'https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg',
                 }}
@@ -79,7 +77,7 @@ export default function Dashboard({ navigation }) {
             </TouchableOpacity>
           </View>
           <View style={styles.projects}>
-            <Text style={styles.projtitle}>Projects</Text>
+            <Text style={styles.projtitle}></Text>
             <TouchableOpacity
               onPress={() => navigation.navigate('CreateProject')}
             >
@@ -95,12 +93,17 @@ export default function Dashboard({ navigation }) {
             <ScrollView style={styles.projCard}>
               {projects.map((item, i) => (
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('ViewProject')}
+                  key={i}
+                  onPress={() =>
+                    navigation.navigate('ViewProject', {
+                      projectTitle: item.projectTitle,
+                      description: item.description,
+                    })
+                  }
                 >
                   <ProjectCard
-                    key={i}
+                    description={item.description}
                     projectTitle={item.projectTitle}
-                    date="January"
                   />
                 </TouchableOpacity>
               ))}
