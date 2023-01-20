@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import {
   Assets,
   Typography,
@@ -18,7 +18,6 @@ import {
   Incubator,
   Avatar,
   Card,
-  Icon,
   TextField,
   Colors,
   ExpandableSection,
@@ -29,26 +28,55 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Poppins_300Light, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import ProjectCard from './ProjectCard';
 import { styleProps } from 'react-native-web/dist/cjs/modules/forwardedProps';
+import Icon from 'react-native-vector-icons/Ionicons';
 import Backarrow from '../assets/backarrow.png';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useState } from 'react';
+import { useState, useEffect, isFocused } from 'react';
+import { getItemLabel } from 'react-native-ui-lib/src/components/picker/PickerPresenter';
+const axios = require('axios');
 
-export default function CreateProject(props) {
+export default function CreateProject({ route, navigation }) {
   const [expand, setExpand] = useState(false);
+  const [projects, setProjects] = React.useState('');
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    async function fetchData() {
+      if (isFocused) {
+        getInitialData();
+      }
+    }
+    fetchData();
+  }, [isFocused]);
 
+  const getInitialData = async () => {
+    const { attributes } = await Auth.currentAuthenticatedUser();
+    const res = await axios.get(
+      'https://3820foa0lk.execute-api.us-east-1.amazonaws.com/default/getUsersProjectPython',
+      { params: { email: attributes.email } }
+    );
+    await setProjects(res.data);
+  };
+  const { projectTitle, description } = route.params;
   return (
     <KeyboardAwareScrollView>
       <View style={styles.header}>
         <View style={styles.row1}>
-          <Icon style={styles.icon}></Icon>
-          <Text style={styles.headertitle}>Project Name</Text>
+          <Icon.Button
+            style={styles.icon}
+            name="arrow-back"
+            size={28}
+            backgroundColor="#fff"
+            color="#000"
+          ></Icon.Button>
+
+          <Text style={styles.headertitle}>{projectTitle}</Text>
           <TouchableOpacity style={styles.editBtn}>
             <Text style={styles.editBtn}>Edit</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.row2}>
           <Text style={styles.headerTitle2}>Description</Text>
-          <Text style={styles.projDescription}>Project Description</Text>
+          <Text style={styles.projDescription}>{description}</Text>
         </View>
       </View>
 
@@ -71,8 +99,9 @@ export default function CreateProject(props) {
             }
             onPress={() => setExpand(!expand)}
           ></ExpandableSection>
+
           {expand && (
-            <Card flexDirection="row">
+            <Card marginTop={10} marginBottom={20} flexDirection="row">
               <Card.Image
                 source={{
                   uri: 'https://picsum.photos/200/300',
@@ -93,9 +122,9 @@ export default function CreateProject(props) {
             backgroundColor="#1C1018"
             size="large"
             color="#fff"
-            style={styles.Btn}
+            style={styles.btn}
           >
-            <Text style={styles.btnText}>Create</Text>
+            <Text style={styles.btnText}>Createff</Text>
           </Button>
         </View>
       </View>
@@ -117,13 +146,13 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     justifyContent: 'center',
   },
+
   headertitle: {
-    flex: 3,
     fontFamily: 'Poppins_700Bold',
     fontSize: 18,
-    justifyContent: 'center',
-    flexDirection: 'column',
-    textAlign: 'center',
+  },
+  icon: {
+    marginLeft: -10,
   },
   headerTitle2: {
     textAlign: 'left',
@@ -136,18 +165,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'Poppins_500Medium',
   },
-  icon: {
-    flex: 1,
-    flexDirection: 'column',
-  },
   editBtn: {
-    flex: 1,
     fontFamily: 'Poppins_500Medium',
     fontSize: 14,
-    textAlign: 'right',
   },
   row1: {
     flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    justifyContent: 'space-between',
   },
   row2: {
     flexDirection: 'column',
@@ -155,6 +181,8 @@ const styles = StyleSheet.create({
   },
   bucketAdd: {
     flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 30,
   },
   bucketAddButton: {
     flex: 1,
@@ -167,13 +195,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   bucketTitle: {
-    textAlign: 'left',
-    flex: 1,
     fontSize: 20,
     fontFamily: 'Poppins_600SemiBold',
-    paddingBottom: 30,
-    flexDirection: 'column',
-    alignSelf: 'flex-start',
   },
   underline: {
     borderColor: '#1C1018',
@@ -187,5 +210,12 @@ const styles = StyleSheet.create({
   },
   btn: {
     marginTop: 280,
+  },
+  bucketCat: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    paddingVertical: 20,
+    borderRadius: 5,
+    paddingHorizontal: 10,
   },
 });

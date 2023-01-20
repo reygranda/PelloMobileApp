@@ -36,10 +36,10 @@ import { v4 as uuidv4 } from 'uuid';
 import backArrow from '../assets/arrow-back-svgrepo-com.svg';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Amplify, Auth } from 'aws-amplify';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 
-export default function CreateProject(migrate) {
+export default function Task(migrate) {
   const [projName, setProjName] = useState('');
-  const [error, setError] = useState('');
   const [projDescription, setProjDescription] = useState('');
   const navigation = useNavigation();
 
@@ -47,10 +47,6 @@ export default function CreateProject(migrate) {
     // Creating axios call to backend
     let projectId = uuidv4();
     const { attributes } = await Auth.currentAuthenticatedUser();
-    if (!projName) {
-      setError('Please Enter Project Name');
-      return;
-    }
     axios
       // POST Request
       .post(
@@ -84,27 +80,49 @@ export default function CreateProject(migrate) {
           style={styles.icon}
           onPress={() => navigation.goBack()}
         ></Icon.Button>
-        <Text style={styles.headertitle}>Create New Project</Text>
-        <TouchableOpacity style={styles.editBtn}></TouchableOpacity>
+        <Text style={styles.headertitle}>Task Name</Text>
+        <TouchableOpacity style={styles.editBtn}>
+          <Text
+            style={{
+              color: '#000',
+              textAlign: 'right',
+              marginRight: 20,
+              margiLeft: -50,
+            }}
+          >
+            Edit
+          </Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.formContainer}>
-        <Text style={styles.projTitle}>Project Details</Text>
-        <TextField
-          migrate
-          placeholder={'Project Name'}
-          floatingPlaceholder
-          fieldStyle={styles.underline}
-          onChangeText={(text) => setProjName(text)}
-        ></TextField>
-        {error && <Text>{error}</Text>}
+        <View style={{ paddingBottom: 30 }}>
+          <Text style={styles.subTitles}>Task Name</Text>
 
-        <TextField
-          migrate
-          placeholder={'Description'}
-          floatingPlaceholder
-          fieldStyle={styles.underline}
-          onChangeText={(text) => setProjDescription(text)}
-        ></TextField>
+          <Text style={{ color: '#989595' }}>Complete project routes</Text>
+        </View>
+        <View style={{ paddingBottom: 30 }}>
+          <Text style={styles.subTitles}>Created By</Text>
+
+          <Text style={{ color: '#989595' }}>Complete project routes</Text>
+        </View>
+        <View>
+          <Text style={styles.subTitles}>Due Date</Text>
+          <RNDateTimePicker
+            style={{ alignSelf: 'left', marginBottom: 30 }}
+            value={new Date()}
+          />
+        </View>
+        <View>
+          <Text style={styles.subTitles}>Assigned To</Text>
+          <TouchableOpacity>
+            <Avatar
+              style={styles.avatar}
+              source={{
+                uri: 'https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg',
+              }}
+            />
+          </TouchableOpacity>
+        </View>
         <View style={styles.btn}>
           <Button
             borderRadius={5}
@@ -114,7 +132,7 @@ export default function CreateProject(migrate) {
             style={styles.Btn}
             onPress={() => createProj()}
           >
-            <Text style={styles.btnText}>Create</Text>
+            <Text style={styles.btnText}>Re-Locate Task</Text>
           </Button>
         </View>
       </View>
@@ -125,7 +143,6 @@ export default function CreateProject(migrate) {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: '#fff',
-    paddingHorizontal: 0,
     paddingTop: 50,
     paddingBottom: 50,
     borderBottomLeftRadius: 20,
@@ -134,18 +151,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
-    justifyContent: 'center',
   },
   headertitle: {
-    flex: 3,
     fontFamily: 'Poppins_700Bold',
     fontSize: 18,
-    justifyContent: 'center',
-    flexDirection: 'column',
-    textAlign: 'center',
+  },
+  subTitles: {
+    textAlign: 'left',
+    color: '#000',
+    fontFamily: 'Poppins_700Bold',
+    paddingBottom: 10,
   },
   icon: {
-    flex: 1,
     flexDirection: 'column',
     marginLeft: 10,
   },
@@ -153,7 +170,8 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: 'Poppins_500Medium',
     fontSize: 14,
-    textAlign: 'center',
+
+    color: '#000',
   },
   formContainer: {
     paddingHorizontal: 20,
@@ -174,7 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   btn: {
-    marginTop: 290,
+    bottom: -100,
   },
   underline: {
     border: 'none',

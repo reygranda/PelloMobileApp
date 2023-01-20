@@ -39,7 +39,6 @@ import { Amplify, Auth } from 'aws-amplify';
 
 export default function CreateProject(migrate) {
   const [projName, setProjName] = useState('');
-  const [error, setError] = useState('');
   const [projDescription, setProjDescription] = useState('');
   const navigation = useNavigation();
 
@@ -47,10 +46,6 @@ export default function CreateProject(migrate) {
     // Creating axios call to backend
     let projectId = uuidv4();
     const { attributes } = await Auth.currentAuthenticatedUser();
-    if (!projName) {
-      setError('Please Enter Project Name');
-      return;
-    }
     axios
       // POST Request
       .post(
@@ -84,23 +79,21 @@ export default function CreateProject(migrate) {
           style={styles.icon}
           onPress={() => navigation.goBack()}
         ></Icon.Button>
-        <Text style={styles.headertitle}>Create New Project</Text>
+        <Text style={styles.headertitle}>User Settings</Text>
         <TouchableOpacity style={styles.editBtn}></TouchableOpacity>
       </View>
       <View style={styles.formContainer}>
-        <Text style={styles.projTitle}>Project Details</Text>
+        <Text style={styles.projTitle}>Change Password</Text>
         <TextField
           migrate
-          placeholder={'Project Name'}
+          placeholder={'Enter New Password'}
           floatingPlaceholder
           fieldStyle={styles.underline}
           onChangeText={(text) => setProjName(text)}
         ></TextField>
-        {error && <Text>{error}</Text>}
-
         <TextField
           migrate
-          placeholder={'Description'}
+          placeholder={'Confirm New Password'}
           floatingPlaceholder
           fieldStyle={styles.underline}
           onChangeText={(text) => setProjDescription(text)}
@@ -114,7 +107,7 @@ export default function CreateProject(migrate) {
             style={styles.Btn}
             onPress={() => createProj()}
           >
-            <Text style={styles.btnText}>Create</Text>
+            <Text style={styles.btnText}>Update Password</Text>
           </Button>
         </View>
       </View>

@@ -27,22 +27,25 @@ import { AuthContext } from './contexts/AuthContext';
 import { loadAsync } from 'expo-font';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 
-const SettingButton = ({name, navigation}) => {
-  return(
-    <TouchableOpacity style = {styles.itemContainer} onPress = { () => navigation.navigate('Dashboard')}>
-        <Text style = {styles.settingsText}> {name} </Text>
-        <Icon.Button
-              name="arrow-forward"
-              size={28}
-              backgroundColor="#A9A9A9"
-              color="#fff"
-              style={styles.icon}
-            ></Icon.Button>
+const SettingButton = ({ name, navigation }) => {
+  return (
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => navigation.navigate('ChangePassword')}
+    >
+      <Text style={styles.settingsText}> {name} </Text>
+      <Icon.Button
+        name="arrow-forward"
+        size={28}
+        backgroundColor="#fff"
+        color="#A9A9A9"
+        style={styles.icon}
+      ></Icon.Button>
     </TouchableOpacity>
   );
-}
+};
 
-export default function UserProfile({ props}) {
+export default function UserProfile({ props }) {
   // const userId = props.userId
   const navigation = useNavigation();
   const userId = '62504c20cd149d35c0719fb8';
@@ -90,13 +93,22 @@ export default function UserProfile({ props}) {
           size={80}
         />
       </View>
-      <Text style={{margin: 20}}> Settings </Text>
-      <View style = {styles.settingView}>
-        <SettingButton name = "Change Password" navigation = {navigation}/>
-        <SettingButton name = "Change Name" navigation = {navigation}/>
+      <Text
+        style={{
+          margin: 20,
+          color: '#000',
+          fontFamily: 'Poppins_700Bold',
+          fontSize: 16,
+        }}
+      >
+        {' '}
+        Settings{' '}
+      </Text>
+      <View style={styles.settingView}>
+        <SettingButton name="Change Password" navigation={navigation} />
+        <SettingButton name="Change Name" navigation={navigation} />
       </View>
     </View>
-    
   );
 }
 
@@ -130,23 +142,22 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   itemContainer: {
-    backgroundColor: "#A9A9A9",
     flexDirection: 'row',
     alignItems: 'center',
-    marginHorizontal: 20,
-    marginVertical: 5,
-    justifyContent: "space-between",
+    marginBottom: 10,
+    justifyContent: 'space-between',
     paddingHorizontal: 10,
-    paddingVertical: 20,
-    borderRadius: 5
+    paddingVertical: 5,
+    borderRadius: 5,
+    border: 'none',
+    backgroundColor: '#ffffff',
   },
   settingsText: {
-    color: '#fff',
+    color: '#000',
     fontFamily: 'Poppins_400Regular',
   },
   settingView: {
-    flex: 1
+    flex: 1,
+    marginHorizontal: 20,
   },
-  icon: {
-  }
 });
