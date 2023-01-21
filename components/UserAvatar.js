@@ -34,11 +34,12 @@ const axios = require('axios');
 import { AuthContext } from './contexts/AuthContext';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-export default function Dashboard({ navigation }) {
+export default function Dashboard({ navigation, avatarSize }) {
   // const userId = props.userId
   const [avatarUrl, setAvatarUrl] = React.useState(null);
   const isFocused = useIsFocused();
   const { signOut } = React.useContext(AuthContext);
+  const userAvatarSize = avatarSize
 
   useEffect(() => {
     async function fetchData() {
@@ -64,6 +65,7 @@ export default function Dashboard({ navigation }) {
             source={{
                 uri: avatarUrl,
             }}
+            size={userAvatarSize}
             />
         </TouchableOpacity>
   );

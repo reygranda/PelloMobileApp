@@ -69,7 +69,7 @@ export default function Dashboard({ navigation }) {
               <Text style={styles.username}>Rey Granda</Text>
               <Text style={styles.welcome}>Hello,</Text>
             </View>
-            <UserAvatar/>
+            <UserAvatar avatarSize={60}/>
           </View>
           <View style={styles.projects}>
             <Text style={styles.projtitle}></Text>

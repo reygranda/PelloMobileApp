@@ -20,6 +20,7 @@ import { Poppins_300Light, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
 import ProjectCard from './ProjectCard';
 import CreateProject from './CreateProject';
+import UserAvatar from './UserAvatar'
 import { Amplify, Auth, Storage } from 'aws-amplify';
 import { useEffect } from 'react';
 const axios = require('axios');
@@ -171,13 +172,7 @@ export default function UserProfile({ props }) {
           <Text style={styles.welcome}>Edit Image</Text>
         </TouchableOpacity>
 
-        <Avatar
-          style={styles.avatar}
-          source={{
-            uri: 'https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg',
-          }}
-          size={80}
-        />
+        <UserAvatar avatarSize={80}/>
       </View>
       <Text
         style={{
