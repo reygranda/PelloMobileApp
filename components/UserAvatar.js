@@ -28,18 +28,18 @@ import { Poppins_300Light, Poppins_700Bold } from '@expo-google-fonts/poppins';
 import ProjectCard from './ProjectCard';
 import CreateProject from './CreateProject';
 import ViewProject from './ViewProject';
-import UserAvatar from './UserAvatar'
 import { Amplify, Auth } from 'aws-amplify';
 import { useEffect } from 'react';
 const axios = require('axios');
 import { AuthContext } from './contexts/AuthContext';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-export default function Dashboard({ navigation }) {
+export default function Dashboard({ navigation, avatarSize }) {
   // const userId = props.userId
-  const [projects, setProjects] = React.useState(null);
+  const [avatarUrl, setAvatarUrl] = React.useState(null);
   const isFocused = useIsFocused();
   const { signOut } = React.useContext(AuthContext);
+  const userAvatarSize = avatarSize
 
   useEffect(() => {
     async function fetchData() {
@@ -53,60 +53,21 @@ export default function Dashboard({ navigation }) {
   const getInitialData = async () => {
     const { attributes } = await Auth.currentAuthenticatedUser();
     const res = await axios.get(
-      'https://3820foa0lk.execute-api.us-east-1.amazonaws.com/default/getUsersProjectPython',
+      'https://3820foa0lk.execute-api.us-east-1.amazonaws.com/default/getUserInfo',
       { params: { email: attributes.email } }
     );
-    await setProjects(res.data);
+    await setAvatarUrl(res.data.avatarUrl);
   };
 
   return (
-    <View style={styles.container}>
-      {projects === null && <Spinner color="black" />}
-      {projects && (
-        <View>
-          <View style={styles.user}>
-            <View>
-              <Text style={styles.username}>Rey Granda</Text>
-              <Text style={styles.welcome}>Hello,</Text>
-            </View>
-            <UserAvatar avatarSize={60}/>
-          </View>
-          <View style={styles.projects}>
-            <Text style={styles.projtitle}></Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('CreateProject')}
-            >
-              <Icon
-                name="add-circle-outline"
-                size={32}
-                backgroundColor="#f3f3f3"
-                color="#000"
-              ></Icon>
-            </TouchableOpacity>
-          </View>
-          <View style={{ marginHorizontal: 20 }}>
-            <ScrollView style={styles.projCard}>
-              {projects.map((item, i) => (
-                <TouchableOpacity
-                  key={i}
-                  onPress={() =>
-                    navigation.navigate('ViewProject', {
-                      projectTitle: item.projectTitle,
-                      description: item.description,
-                    })
-                  }
-                >
-                  <ProjectCard
-                    description={item.description}
-                    projectTitle={item.projectTitle}
-                  />
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
-      )}
-    </View>
+        <TouchableOpacity onPress={signOut}>
+            <Avatar
+            source={{
+                uri: avatarUrl,
+            }}
+            size={userAvatarSize}
+            />
+        </TouchableOpacity>
   );
 }
 
