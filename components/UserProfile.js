@@ -20,12 +20,13 @@ import { Poppins_300Light, Poppins_700Bold } from '@expo-google-fonts/poppins';
 
 import ProjectCard from './ProjectCard';
 import CreateProject from './CreateProject';
-import { Amplify, Auth } from 'aws-amplify';
+import { Amplify, Auth, Storage } from 'aws-amplify';
 import { useEffect } from 'react';
 const axios = require('axios');
 import { AuthContext } from './contexts/AuthContext';
 import { loadAsync } from 'expo-font';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
 
 const SettingButton = ({ name, navigation }) => {
   return (
@@ -47,11 +48,92 @@ const SettingButton = ({ name, navigation }) => {
 
 export default function UserProfile({ props }) {
   // const userId = props.userId
+  const [image, setImage] = React.useState(null);
   const navigation = useNavigation();
   const userId = '62504c20cd149d35c0719fb8';
   const [projects, setProjects] = React.useState(null);
-  //   const [password, onChangePassword] = React.useState(null);
   const { signOut } = React.useContext(AuthContext);
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    
+
+    if (!result.canceled) {
+      const imagePath = result.assets[0].uri;
+      const imagePathCleaned = imagePath.substring(imagePath.lastIndexOf('/') + 1, imagePath.length)
+      const imageExt = imagePath.split('.').pop();
+      const imageMime = `image/${imageExt}`;
+
+      console.log("------")
+      console.log(imagePath)
+      console.log(imagePathCleaned)
+      console.log("------")
+
+      let picture = await fetch(imagePath);
+      picture = await picture.blob();
+      console.log(picture)
+
+      const imageData = new File([picture], `photo.${imageExt}`);
+      axios(
+          "https://3820foa0lk.execute-api.us-east-1.amazonaws.com/default/getPresignedS3Url?fileName=" +
+              imagePathCleaned
+      ).then(async response => {
+          // Getting the url from response
+          const url = response.data.fileUploadURL;
+          const finalUrl = url.split('?')[0]
+          console.log("-------")
+          console.log(finalUrl)
+          console.log("--------")
+          // Initiating the PUT request to upload file    
+          await fetch(url, {
+              method: "PUT",
+              body: imageData,
+              key: imagePath,
+              headers: {
+                'Content-Type': imageMime
+              }
+          })
+              .then(async res => {
+                //add the s3 url to the users dynamo table
+                const { attributes } = await Auth.currentAuthenticatedUser();
+                axios
+                // POST Request
+                .post(
+                  'https://3820foa0lk.execute-api.us-east-1.amazonaws.com/default/addS3URLtoUser',
+                  {
+                    s3url: finalUrl,
+                    email: attributes.email,
+                  }
+                )
+                .then(function (response) {
+                  if (response.status == 200) {
+                    console.log(response);
+                  }
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+                console.log(JSON.stringify(res))
+                console.log("Upload successful")
+              })
+              .catch(err => {
+                console.log(JSON.stringify(err))
+                this.setState({
+                    error: "Error Occured while uploading the file",
+                    uploadSuccess: undefined
+                });
+              });
+      });
+      setImage(result.assets[0].uri);
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -77,11 +159,15 @@ export default function UserProfile({ props }) {
     fetchData();
   }, []);
 
+  const handleEditImage = () => {
+
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.user}>
         <Text style={styles.username}>Rey Granda</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={pickImage}>
           <Text style={styles.welcome}>Edit Image</Text>
         </TouchableOpacity>
 
