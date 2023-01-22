@@ -33,12 +33,16 @@ import Backarrow from '../assets/backarrow.png';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useState, useEffect, isFocused } from 'react';
 import { getItemLabel } from 'react-native-ui-lib/src/components/picker/PickerPresenter';
+import Spinner from 'react-native-loading-spinner-overlay';
+
 const axios = require('axios');
 
-export default function CreateProject({ route, navigation }) {
+export default function ViewProject({ route, navigation }) {
   const [expand, setExpand] = useState(false);
-  const [projects, setProjects] = React.useState('');
+  const [buckets, setBuckets] = React.useState(null);
   const isFocused = useIsFocused();
+  const { projectTitle, description, id } = route.params;
+
   useEffect(() => {
     async function fetchData() {
       if (isFocused) {
@@ -49,86 +53,95 @@ export default function CreateProject({ route, navigation }) {
   }, [isFocused]);
 
   const getInitialData = async () => {
-    const { attributes } = await Auth.currentAuthenticatedUser();
     const res = await axios.get(
-      'https://3820foa0lk.execute-api.us-east-1.amazonaws.com/default/getUsersProjectPython',
-      { params: { email: attributes.email } }
+      'https://3820foa0lk.execute-api.us-east-1.amazonaws.com/default/getProject',
+      { params: { id: id } }
     );
-    await setProjects(res.data);
+    await setBuckets([res.data]);
   };
-  const { projectTitle, description } = route.params;
+
   return (
-    <KeyboardAwareScrollView>
-      <View style={styles.header}>
-        <View style={styles.row1}>
-          <Icon.Button
-            style={styles.icon}
-            name="arrow-back"
-            size={28}
-            backgroundColor="#fff"
-            color="#000"
-          ></Icon.Button>
+    <View>
+      {buckets === null && <Spinner/>}
+      {buckets &&
+        <KeyboardAwareScrollView>
+          <View style={styles.header}>
+            <View style={styles.row1}>
+              <Icon.Button
+                style={styles.icon}
+                name="arrow-back"
+                size={28}
+                backgroundColor="#fff"
+                color="#000"
+              ></Icon.Button>
 
-          <Text style={styles.headertitle}>{projectTitle}</Text>
-          <TouchableOpacity style={styles.editBtn}>
-            <Text style={styles.editBtn}>Edit</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.row2}>
-          <Text style={styles.headerTitle2}>Description</Text>
-          <Text style={styles.projDescription}>{description}</Text>
-        </View>
-      </View>
+              <Text style={styles.headertitle}>{projectTitle}</Text>
+              <TouchableOpacity style={styles.editBtn}>
+                <Text style={styles.editBtn}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.row2}>
+              <Text style={styles.headerTitle2}>Description</Text>
+              <Text style={styles.projDescription}>{description}</Text>
+            </View>
+          </View>
 
-      <View style={styles.bucketContainer}>
-        <View style={styles.bucketAdd}>
-          <Text style={styles.bucketTitle}>Buckets</Text>
-          <TouchableOpacity style={styles.bucketAddButton}>
-            <Text>Add</Text>
-          </TouchableOpacity>
-        </View>
-        <View>
-          <ExpandableSection
-            expanded={true}
-            top={false}
-            sectionHeader={
-              <View style={styles.bucketCat}>
-                <Text>Expandable Category</Text>
-                <Icon style={styles.icon}></Icon>
+          <View style={styles.bucketContainer}>
+            <View style={styles.bucketAdd}>
+              <Text style={styles.bucketTitle}>Buckets</Text>
+              <TouchableOpacity style={styles.bucketAddButton}>
+                <Text>Add</Text>
+              </TouchableOpacity>
+            </View>
+            {buckets.map((item, i) => (
+              <View key={i}>  
+                <ExpandableSection
+                  expanded={true}
+                  top={false}
+                  sectionHeader={
+                    <View style={styles.bucketCat}>
+                      <Text>{Object.keys(item)}</Text>
+                      <Icon style={styles.icon}></Icon>
+                    </View>
+                  }
+                  onPress={() => setExpand(!expand)}
+                ></ExpandableSection>
+
+                {expand && 
+                  Object.values(item).map((task, j) => (
+                  (
+                    <Card key={j} marginTop={10} marginBottom={20} flexDirection="row">
+                      <Card.Image
+                        source={{
+                          uri: 'https://picsum.photos/200/300',
+                        }}
+                        height={80}
+                        width={100}
+                      />
+                      <View flexDirection="flex-column" alignSelf="center">
+                        <Text>{task[j].taskName}</Text>
+                        <Text>Assigned to: {task[j].assignedTo}</Text>
+                      </View>
+                    </Card>
+                  ))
+                  )}
               </View>
-            }
-            onPress={() => setExpand(!expand)}
-          ></ExpandableSection>
-
-          {expand && (
-            <Card marginTop={10} marginBottom={20} flexDirection="row">
-              <Card.Image
-                source={{
-                  uri: 'https://picsum.photos/200/300',
-                }}
-                height={80}
-                width={100}
-              />
-              <View flexDirection="flex-column" alignSelf="center">
-                <Text>Task Name</Text>
-                <Text>Task Due Date</Text>
-              </View>
-            </Card>
-          )}
-        </View>
-        <View style={styles.btn}>
-          <Button
-            borderRadius={5}
-            backgroundColor="#1C1018"
-            size="large"
-            color="#fff"
-            style={styles.btn}
-          >
-            <Text style={styles.btnText}>Createff</Text>
-          </Button>
-        </View>
-      </View>
-    </KeyboardAwareScrollView>
+            ))}
+            <View style={styles.btn}>
+              <Button
+                borderRadius={5}
+                backgroundColor="#1C1018"
+                size="large"
+                color="#fff"
+                style={styles.btn}
+              >
+                <Text style={styles.btnText}>Createff</Text>
+              </Button>
+            </View>
+          </View>
+        </KeyboardAwareScrollView>
+      }
+    </View>
   );
 }
 

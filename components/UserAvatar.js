@@ -1,38 +1,16 @@
-import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
-  View,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Pressable,
+  TouchableOpacity
 } from 'react-native';
 import * as React from 'react';
 import { NavigationContainer, useIsFocused } from '@react-navigation/native';
 import {
-  Assets,
-  Colors,
-  Spacings,
-  Typography,
-  Text,
-  Button,
-  Keyboard,
-  Incubator,
   Avatar,
-  Card,
 } from 'react-native-ui-lib'; //eslint-disable-line
-import Icon from 'react-native-vector-icons/Ionicons';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { Poppins_300Light, Poppins_700Bold } from '@expo-google-fonts/poppins';
-import ProjectCard from './ProjectCard';
-import CreateProject from './CreateProject';
-import ViewProject from './ViewProject';
-import { Amplify, Auth } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 import { useEffect } from 'react';
 const axios = require('axios');
 import { AuthContext } from './contexts/AuthContext';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function Dashboard({ navigation, avatarSize }) {
   // const userId = props.userId
