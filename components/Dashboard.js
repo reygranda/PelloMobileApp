@@ -93,6 +93,7 @@ export default function Dashboard({ navigation }) {
                     navigation.navigate('ViewProject', {
                       projectTitle: item.projectTitle,
                       description: item.description,
+                      id: item.id
                     })
                   }
                 >

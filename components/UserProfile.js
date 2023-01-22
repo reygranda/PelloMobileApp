@@ -72,14 +72,8 @@ export default function UserProfile({ props }) {
       const imageExt = imagePath.split('.').pop();
       const imageMime = `image/${imageExt}`;
 
-      console.log("------")
-      console.log(imagePath)
-      console.log(imagePathCleaned)
-      console.log("------")
-
       let picture = await fetch(imagePath);
       picture = await picture.blob();
-      console.log(picture)
 
       const imageData = new File([picture], `photo.${imageExt}`);
       axios(
@@ -89,9 +83,6 @@ export default function UserProfile({ props }) {
           // Getting the url from response
           const url = response.data.fileUploadURL;
           const finalUrl = url.split('?')[0]
-          console.log("-------")
-          console.log(finalUrl)
-          console.log("--------")
           // Initiating the PUT request to upload file    
           await fetch(url, {
               method: "PUT",
@@ -115,17 +106,12 @@ export default function UserProfile({ props }) {
                 )
                 .then(function (response) {
                   if (response.status == 200) {
-                    console.log(response);
                   }
                 })
                 .catch(function (error) {
-                  console.log(error);
                 });
-                console.log(JSON.stringify(res))
-                console.log("Upload successful")
               })
               .catch(err => {
-                console.log(JSON.stringify(err))
                 this.setState({
                     error: "Error Occured while uploading the file",
                     uploadSuccess: undefined
@@ -150,11 +136,9 @@ export default function UserProfile({ props }) {
         'Access-Control-Allow-Origin': '*',
       })
         .then(function (response) {
-          console.log(response);
           setProjects(response.data);
         })
         .catch(function (error) {
-          console.log(error);
         });
     }
     fetchData();
