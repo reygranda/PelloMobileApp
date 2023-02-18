@@ -63,8 +63,9 @@ export default function ViewProject({ route, navigation }) {
   return (
     <View>
       {buckets === null && <Spinner/>}
-      {buckets &&
+      {(buckets || buckets == "")  &&
         <KeyboardAwareScrollView>
+          {console.log(buckets)}
           <View style={styles.header}>
             <View style={styles.row1}>
               <Icon.Button
@@ -95,36 +96,43 @@ export default function ViewProject({ route, navigation }) {
             </View>
             {buckets.map((item, i) => (
               <View key={i}>  
-                <ExpandableSection
-                  expanded={true}
-                  top={false}
-                  sectionHeader={
-                    <View style={styles.bucketCat}>
-                      <Text>{Object.keys(item)}</Text>
-                      <Icon style={styles.icon}></Icon>
-                    </View>
-                  }
-                  onPress={() => setExpand(!expand)}
-                ></ExpandableSection>
-
-                {expand && 
-                  Object.values(item).map((task, j) => (
-                  (
-                    <Card key={j} marginTop={10} marginBottom={20} flexDirection="row">
-                      <Card.Image
-                        source={{
-                          uri: 'https://picsum.photos/200/300',
-                        }}
-                        height={80}
-                        width={100}
-                      />
-                      <View flexDirection="flex-column" alignSelf="center">
-                        <Text>{task[j].taskName}</Text>
-                        <Text>Assigned to: {task[j].assignedTo}</Text>
-                      </View>
-                    </Card>
-                  ))
-                  )}
+                {console.log(item)}
+                {Object.keys(item).length === 0 && 
+                  <Text>Add a Bucket to get started</Text>
+                }
+                {Object.keys(item).length != 0 && 
+                  <View>
+                    <ExpandableSection
+                      expanded={true}
+                      top={false}
+                      sectionHeader={
+                        <View style={styles.bucketCat}>
+                          <Text>{Object.keys(item)}</Text>
+                          <Icon style={styles.icon}></Icon>
+                        </View>
+                      }
+                      onPress={() => setExpand(!expand)}
+                    ></ExpandableSection>
+                    {expand && 
+                      Object.values(item).map((task, j) => (
+                      (
+                        <Card key={j} marginTop={10} marginBottom={20} flexDirection="row">
+                          <Card.Image
+                            source={{
+                              uri: 'https://picsum.photos/200/300',
+                            }}
+                            height={80}
+                            width={100}
+                          />
+                          <View flexDirection="flex-column" alignSelf="center">
+                            <Text>{task[j].taskName}</Text>
+                            <Text>Assigned to: {task[j].assignedTo}</Text>
+                          </View>
+                        </Card>
+                      ))
+                      )}
+                  </View>
+                }
               </View>
             ))}
             <View style={styles.btn}>
